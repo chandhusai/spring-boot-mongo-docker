@@ -1,40 +1,26 @@
-version: '3.1'
-
+version: "3"
 services:
-  springboot:
-    image: dockerhandson/spring-boot-mongo:latest
-    restart: always
-    container_name: springboot
+  springapp:
+    image: dockerhandson/spring-boot-mongo
     ports:
-      - 9090:8080
-    working_dir: /opt/app
-    depends_on:
-      - mongo
+    - "8080:8080"
     deploy:
-      replicas: 2
+      replicas: 4
       update_config:
         parallelism: 1
         delay: 20s
       restart_policy:
-        condition: on-failure   
-
+        condition: on-failure
+        max_attempts: 5
   mongo:
     image: mongo
-    container_name: springboot-mongo
-#    ports:  # for demo/debug purpose only
-#      - 27018:27017
     volumes:
-      - data:/data/db
-      - data-bkp:/data/bkp
-    restart: always
-    
+    - "mongodbbkp:/data/db"
 volumes:
-  data:
-    #external: true
-  data-bkp:
-    #external: true
-    
+  mongodbbkp:
+    external: true
 networks:
   default:
     external:
-      name: customoverlay
+      name: airtel
+        
